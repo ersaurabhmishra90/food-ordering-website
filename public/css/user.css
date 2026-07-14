@@ -1,0 +1,37 @@
+body{
+
+    background:#f8f9fa;
+
+}
+
+.card{
+
+    border:none;
+
+    border-radius:15px;
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.2);
+
+}
+
+.card img{
+
+    border-top-left-radius:15px;
+
+    border-top-right-radius:15px;
+
+}
+
+.navbar-brand{
+
+    font-weight:600;
+
+}

@@ -1,0 +1,171 @@
+/* ===========================
+   Google Font
+=========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f7fc;
+}
+
+/* ===========================
+   Navbar
+=========================== */
+
+.navbar{
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+.navbar-brand{
+    font-size:24px;
+    font-weight:600;
+}
+
+/* ===========================
+   Cards
+=========================== */
+
+.card{
+
+    border:none;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+
+}
+
+.card-header{
+
+    font-weight:600;
+
+}
+
+/* ===========================
+   Form
+=========================== */
+
+.form-control{
+
+    border-radius:8px;
+
+    padding:12px;
+
+}
+
+.form-control:focus{
+
+    box-shadow:none;
+
+    border-color:#0d6efd;
+
+}
+
+textarea{
+
+    resize:none;
+
+}
+
+/* ===========================
+   Button
+=========================== */
+
+.btn{
+
+    border-radius:8px;
+
+    transition:.3s;
+
+}
+
+.btn-success:hover{
+
+    transform:scale(1.02);
+
+}
+
+/* ===========================
+   Table
+=========================== */
+
+.table{
+
+    margin-bottom:0;
+
+}
+
+.table thead{
+
+    background:#0d6efd;
+
+    color:white;
+
+}
+
+.table th{
+
+    padding:15px;
+
+}
+
+.table td{
+
+    vertical-align:middle;
+
+    padding:15px;
+
+}
+
+.table tbody tr:hover{
+
+    background:#eef5ff;
+
+}
+
+/* ===========================
+   Action Buttons
+=========================== */
+
+.edit-btn{
+
+    margin-right:8px;
+
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:768px){
+
+.col-lg-4{
+
+    margin-bottom:20px;
+
+}
+
+.navbar-brand{
+
+    font-size:18px;
+
+}
+
+}
