@@ -9,10 +9,10 @@ const categorySchema = new mongoose.Schema(
         trim: true
     },
 
-    image: {
-        type: String,
-        default: ""
-    },
+    // image: {
+    //     type: String,
+    //     default: ""
+    // },
 
     description: {
         type: String,

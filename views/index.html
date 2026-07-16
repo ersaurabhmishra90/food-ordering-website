@@ -3,40 +3,57 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<title>Food Ordering</title>
+    <title>FoodExpress | Order Delicious Food</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-<link rel="stylesheet" href="/css/user.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
 
 </head>
 
 <body>
 
-<!-- Navbar -->
+<!-- ================= NAVBAR ================= -->
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg sticky-top">
 
 <div class="container">
 
-<a class="navbar-brand">
+<a class="navbar-brand"
+href="/">
 
-🍔 Food Ordering
+🍔 FoodExpress
 
 </a>
 
 <button
 class="navbar-toggler"
+type="button"
 data-bs-toggle="collapse"
-data-bs-target="#menu">
+data-bs-target="#navbarNav">
 
 <span class="navbar-toggler-icon"></span>
 
@@ -44,9 +61,9 @@ data-bs-target="#menu">
 
 <div
 class="collapse navbar-collapse"
-id="menu">
+id="navbarNav">
 
-<ul class="navbar-nav ms-auto">
+<ul class="navbar-nav ms-auto align-items-lg-center">
 
 <li class="nav-item">
 
@@ -72,16 +89,29 @@ Menu
 
 <li class="nav-item">
 
-<a href="/cart"
-class="nav-link">
+<a href="/my-orders"
+id="ordersLink"
+class="nav-link"
+style="display:none">
 
-Cart
+Orders
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="/cart"
+class="nav-link position-relative">
 
 <i class="fa-solid fa-cart-shopping"></i>
 
+Cart
+
 <span
 id="cartCount"
-class="badge bg-danger">
+class="badge bg-danger rounded-pill">
 
 0
 
@@ -93,12 +123,38 @@ class="badge bg-danger">
 
 <li class="nav-item">
 
-<a href="/login.html"
-class="nav-link">
+<span
+id="userName"
+class="nav-link fw-bold text-danger">
+
+</span>
+
+</li>
+
+<li class="nav-item">
+
+<a
+id="loginLink"
+href="/login"
+class="btn btn-outline-danger ms-lg-2">
 
 Login
 
 </a>
+
+</li>
+
+<li class="nav-item">
+
+<button
+id="logoutLink"
+class="btn btn-danger ms-lg-2"
+onclick="logout()"
+style="display:none">
+
+Logout
+
+</button>
 
 </li>
 
@@ -110,56 +166,622 @@ Login
 
 </nav>
 
+<!-- ================= HERO ================= -->
 
-<!-- Hero -->
-
-<section class="bg-primary text-white text-center py-5">
+<section class="hero">
 
 <div class="container">
 
+<div class="row align-items-center">
+
+<div class="col-lg-6 fade-up">
+
 <h1>
 
-Order Delicious Food Online
+Delicious Food
+
+Delivered Fast
 
 </h1>
 
 <p>
 
-Fresh • Fast • Affordable
+Order your favourite food online from the best restaurants near you.
+
+Fast Delivery • Fresh Food • Secure Payment
 
 </p>
+
+<div class="mt-4">
+
+<a href="#foods"
+class="btn btn-warning btn-lg me-3">
+
+🍔 Order Now
+
+</a>
+
+<a href="/menu"
+class="btn btn-light btn-lg">
+
+Explore Menu
+
+</a>
+
+</div>
+
+</div>
+
+<div class="col-lg-6 text-center">
+
+<img
+src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700"
+class="img-fluid rounded-4 shadow">
+
+</div>
+
+</div>
 
 </div>
 
 </section>
 
+<!-- ================= SEARCH ================= -->
 
-<!-- Food Cards -->
+<div class="container">
 
-<div class="container mt-5">
+<div class="search-box">
 
-<h2 class="mb-4">
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<input
+type="text"
+id="searchFood"
+placeholder="Search delicious food...">
+
+</div>
+
+</div>
+
+<!-- ================= CATEGORY ================= -->
+
+<section class="container mt-5">
+
+<div class="section-title">
+
+<h2>
+
+Explore Categories
+
+</h2>
+
+<p>
+
+Choose your favourite food category
+
+</p>
+
+</div>
+
+<div
+id="categoryContainer"
+class="category-scroll">
+
+<!-- Categories loaded here -->
+
+</div>
+
+</section>
+
+<!-- ================= FOOD ================= -->
+
+<section
+class="container py-5"
+id="foods">
+
+<div class="section-title">
+
+<h2>
 
 Popular Foods
 
 </h2>
 
+<p>
+
+Freshly prepared and loved by everyone
+
+</p>
+
+</div>
+
 <div
 class="row"
 id="foodContainer">
 
-<div class="text-center">
+<div class="col-12 text-center">
+
+<div class="loader"></div>
+
+<p class="mt-3">
 
 Loading Foods...
 
-</div>
+</p>
 
 </div>
 
 </div>
 
+</section>
+
+<!-- ================= WHY CHOOSE US ================= -->
+
+<section class="container py-5">
+
+<div class="section-title">
+
+<h2>
+
+Why Choose FoodExpress?
+
+</h2>
+
+<p>
+
+We provide quality food with quick delivery.
+
+</p>
+
+</div>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+
+<div class="feature-card">
+
+<i class="fa-solid fa-burger"></i>
+
+<h4>
+
+Fresh Food
+
+</h4>
+
+<p>
+
+Prepared fresh every day using quality ingredients.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="feature-card">
+
+<i class="fa-solid fa-truck-fast"></i>
+
+<h4>
+
+Fast Delivery
+
+</h4>
+
+<p>
+
+Lightning fast doorstep delivery.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="feature-card">
+
+<i class="fa-solid fa-credit-card"></i>
+
+<h4>
+
+Secure Payment
+
+</h4>
+
+<p>
+
+100% secure online payment with Razorpay.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- ================= STATS ================= -->
+
+<section class="stats">
+
+<div class="container">
+
+<div class="row">
+
+<div class="col-md-3 col-6">
+
+<div class="stat-box">
+
+<h2>500+</h2>
+
+<p>Food Items</p>
+
+</div>
+
+</div>
+
+<div class="col-md-3 col-6">
+
+<div class="stat-box">
+
+<h2>50K+</h2>
+
+<p>Happy Customers</p>
+
+</div>
+
+</div>
+
+<div class="col-md-3 col-6">
+
+<div class="stat-box">
+
+<h2>120+</h2>
+
+<p>Restaurants</p>
+
+</div>
+
+</div>
+
+<div class="col-md-3 col-6">
+
+<div class="stat-box">
+
+<h2>4.9★</h2>
+
+<p>Customer Rating</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+
+<section class="container py-5">
+
+<div class="section-title">
+
+<h2>
+
+What Our Customers Say
+
+</h2>
+
+<p>
+
+Thousands of happy customers trust FoodExpress.
+
+</p>
+
+</div>
+
+<div class="row g-4">
+
+<div class="col-lg-4">
+
+<div class="testimonial">
+
+<img src="https://randomuser.me/api/portraits/women/45.jpg">
+
+<h5>Priya Sharma</h5>
+
+<div class="text-warning mb-3">
+
+★★★★★
+
+</div>
+
+<p>
+
+Amazing service and delicious food. Delivery was very fast!
+
+</p>
+
+</div>
+
+</div>
+
+<div class="col-lg-4">
+
+<div class="testimonial">
+
+<img src="https://randomuser.me/api/portraits/men/35.jpg">
+
+<h5>Rahul Verma</h5>
+
+<div class="text-warning mb-3">
+
+★★★★★
+
+</div>
+
+<p>
+
+Very clean interface and secure payment. Loved it.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="col-lg-4">
+
+<div class="testimonial">
+
+<img src="https://randomuser.me/api/portraits/men/52.jpg">
+
+<h5>Aman Gupta</h5>
+
+<div class="text-warning mb-3">
+
+★★★★★
+
+</div>
+
+<p>
+
+One of the best food ordering experiences I've had.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= NEWSLETTER ================= -->
+
+<section class="container my-5">
+
+<div class="newsletter">
+
+<div class="row align-items-center">
+
+<div class="col-lg-6">
+
+<h2 class="fw-bold">
+
+Subscribe to our Newsletter
+
+</h2>
+
+<p>
+
+Get the latest offers, discounts, and updates.
+
+</p>
+
+</div>
+
+<div class="col-lg-6">
+
+<div class="input-group">
+
+<input
+type="email"
+class="form-control"
+placeholder="Enter your email">
+
+<button
+class="btn btn-dark">
+
+Subscribe
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<div class="container">
+
+<div class="row">
+
+<div class="col-lg-4">
+
+<h4 class="text-white">
+
+🍔 FoodExpress
+
+</h4>
+
+<p>
+
+Delicious food delivered quickly to your doorstep.
+
+Fresh • Fast • Affordable.
+
+</p>
+
+<div class="social mt-4">
+
+<a href="#"><i class="fab fa-facebook-f"></i></a>
+
+<a href="#"><i class="fab fa-instagram"></i></a>
+
+<a href="#"><i class="fab fa-x-twitter"></i></a>
+
+<a href="#"><i class="fab fa-linkedin"></i></a>
+
+</div>
+
+</div>
+
+<div class="col-lg-2">
+
+<h5>
+
+Company
+
+</h5>
+
+<ul>
+
+<li><a href="/">Home</a></li>
+
+<li><a href="/menu">Menu</a></li>
+
+<li><a href="/my-orders">Orders</a></li>
+
+<li><a href="#">About</a></li>
+
+</ul>
+
+</div>
+
+<div class="col-lg-3">
+
+<h5>
+
+Support
+
+</h5>
+
+<ul>
+
+<li><a href="#">Contact Us</a></li>
+
+<li><a href="#">FAQs</a></li>
+
+<li><a href="#">Privacy Policy</a></li>
+
+<li><a href="#">Terms & Conditions</a></li>
+
+</ul>
+
+</div>
+
+<div class="col-lg-3">
+
+<h5>
+
+Contact
+
+</h5>
+
+<p>
+
+📍 Lucknow, Uttar Pradesh
+
+</p>
+
+<p>
+
+📞 +91 9076661825
+
+</p>
+
+<p>
+
+✉ support@foodexpress.com
+
+</p>
+
+</div>
+
+</div>
+
+<hr class="my-4">
+
+<div class="text-center">
+
+<p class="mb-0">
+
+© 2026 FoodExpress. All Rights Reserved.
+
+Developed by <strong>Saurabh Mishra</strong>
+
+</p>
+
+</div>
+
+</div>
+
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+ <script src="/js/toast.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/js/auth.js"></script>
 
 <script src="/js/home.js"></script>
+<!-- Toast -->
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
+
+    <div id="liveToast"
+         class="toast align-items-center text-bg-success border-0"
+         role="alert">
+
+        <div class="d-flex">
+
+            <div class="toast-body" id="toastMessage">
+
+                Success
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast">
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 

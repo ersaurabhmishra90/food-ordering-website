@@ -2,7 +2,7 @@
 =========================================
  Food Routes
 -----------------------------------------
-This file contains all Food APIs.
+ Protected Food APIs
 =========================================
 */
 
@@ -12,6 +12,15 @@ const router = express.Router();
 
 // Upload Middleware
 const upload = require("../middleware/upload");
+
+// Authentication Middleware
+const {
+
+    authMiddleware,
+
+    adminMiddleware
+
+} = require("../middleware/authMiddleware");
 
 // Food Controller
 const {
@@ -28,22 +37,7 @@ const {
 
 
 // =========================================
-// Add Food with Image Upload
-// =========================================
-
-router.post(
-
-    "/",
-
-    upload.single("image"),
-
-    addFood
-
-);
-
-
-// =========================================
-// Get All Foods
+// Get All Foods (Public)
 // =========================================
 
 router.get(
@@ -56,12 +50,35 @@ router.get(
 
 
 // =========================================
-// Update Food
+// Add Food (Admin Only)
+// =========================================
+
+router.post(
+
+    "/",
+
+    authMiddleware,
+
+    adminMiddleware,
+
+    upload.single("image"),
+
+    addFood
+
+);
+
+
+// =========================================
+// Update Food (Admin Only)
 // =========================================
 
 router.put(
 
     "/:id",
+
+    authMiddleware,
+
+    adminMiddleware,
 
     upload.single("image"),
 
@@ -71,18 +88,19 @@ router.put(
 
 
 // =========================================
-// Delete Food
+// Delete Food (Admin Only)
 // =========================================
 
 router.delete(
 
     "/:id",
 
+    authMiddleware,
+
+    adminMiddleware,
+
     deleteFood
 
 );
-
-
-// Export Router
 
 module.exports = router;

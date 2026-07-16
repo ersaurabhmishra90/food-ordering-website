@@ -1,59 +1,63 @@
-/*
-=========================================================
- Order Routes
----------------------------------------------------------
- APIs
- ✔ Place Order
- ✔ Get All Orders
- ✔ Get Single Order
- ✔ Update Order Status
-=========================================================
-*/
-
 const express = require("express");
 
 const router = express.Router();
 
 const {
+    authMiddleware,
+    adminMiddleware
+} = require("../middleware/authMiddleware");
 
+const {
     placeOrder,
-
     getOrders,
-
+    getMyOrders,
     getOrder,
-
     updateStatus
-
 } = require("../controllers/orderController");
 
+// =====================================
+// Customer Routes
+// =====================================
 
-// ==========================================
 // Place Order
-// ==========================================
+router.post(
+    "/",
+    authMiddleware,
+    placeOrder
+);
 
-router.post("/", placeOrder);
+// Logged In User Orders
+router.get(
+    "/my-orders",
+    authMiddleware,
+    getMyOrders
+);
 
+// Single Order (Logged In User)
+router.get(
+    "/:id",
+    authMiddleware,
+    getOrder
+);
 
-// ==========================================
-// Get All Orders
-// ==========================================
+// =====================================
+// Admin Routes
+// =====================================
 
-router.get("/", getOrders);
+// All Orders
+router.get(
+    "/",
+    authMiddleware,
+    adminMiddleware,
+    getOrders
+);
 
-
-// ==========================================
-// Get Single Order
-// ==========================================
-
-router.get("/:id", getOrder);
-
-
-// ==========================================
 // Update Order Status
-// ==========================================
+router.put(
+    "/:id",
+    authMiddleware,
+    adminMiddleware,
+    updateStatus
+);
 
-router.put("/:id", updateStatus);
-
-
-// Export Router
 module.exports = router;

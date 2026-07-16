@@ -9,9 +9,18 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
-  
+
 
     {
+        user: {
+
+    type: mongoose.Schema.Types.ObjectId,
+
+    ref: "User",
+
+    required: true
+
+},
 
         customerName: {
 
@@ -97,7 +106,57 @@ const orderSchema = new mongoose.Schema(
 
             type: String,
 
-            enum: ["Pending", "Preparing", "Out for Delivery", "Delivered", "Cancelled"],
+            enum: [
+
+                "Pending",
+
+                "Preparing",
+
+                "Out for Delivery",
+
+                "Delivered",
+
+                "Cancelled"
+
+            ],
+
+            default: "Pending"
+
+        },
+
+        // =====================================
+        // Payment Details
+        // =====================================
+
+        paymentId: {
+
+            type: String,
+
+            default: ""
+
+        },
+
+        razorpayOrderId: {
+
+            type: String,
+
+            default: ""
+
+        },
+
+        paymentStatus: {
+
+            type: String,
+
+            enum: [
+
+                "Pending",
+
+                "Paid",
+
+                "Failed"
+
+            ],
 
             default: "Pending"
 

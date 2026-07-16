@@ -5,6 +5,11 @@ let editId = null;
 const form = document.getElementById("categoryForm");
 const submitBtn = document.getElementById("submitBtn");
 const tableBody = document.getElementById("categoryTable");
+const TOKEN = localStorage.getItem("token");
+
+const AUTH_HEADERS = {
+    Authorization: "Bearer " + TOKEN
+};
 
 // ==============================
 // Load Categories
@@ -95,7 +100,7 @@ form.addEventListener("submit", async function (e) {
 
         name: document.getElementById("name").value.trim(),
 
-        image: document.getElementById("image").value.trim(),
+       
 
         description: document.getElementById("description").value.trim()
 
@@ -113,9 +118,11 @@ form.addEventListener("submit", async function (e) {
 
                 headers: {
 
-                    "Content-Type": "application/json"
+    "Content-Type": "application/json",
 
-                },
+    Authorization: "Bearer " + TOKEN
+
+},
 
                 body: JSON.stringify(category)
 
@@ -131,9 +138,11 @@ form.addEventListener("submit", async function (e) {
 
                 headers: {
 
-                    "Content-Type": "application/json"
+    "Content-Type": "application/json",
 
-                },
+    Authorization: "Bearer " + TOKEN
+
+},
 
                 body: JSON.stringify(category)
 
@@ -145,7 +154,7 @@ form.addEventListener("submit", async function (e) {
 
         if (data.success) {
 
-            alert(editId ? "Category Updated Successfully" : "Category Added Successfully");
+            showToast(editId ? "Category Updated Successfully" : "Category Added Successfully");
 
             form.reset();
 
@@ -159,7 +168,7 @@ form.addEventListener("submit", async function (e) {
 
         else {
 
-            alert(data.message);
+            showToast(data.message);
 
         }
 
@@ -169,7 +178,7 @@ form.addEventListener("submit", async function (e) {
 
         console.error(error);
 
-        alert("Something went wrong.");
+        showToast("Something went wrong.");
 
     }
 
@@ -186,8 +195,9 @@ async function editCategory(id) {
     try {
 
         const response = await fetch(API_URL);
-
+        console.log(response.status);
         const data = await response.json();
+        console.log(data);
 
         const category = data.categories.find(item => item._id === id);
 
@@ -195,7 +205,7 @@ async function editCategory(id) {
 
         document.getElementById("name").value = category.name;
 
-        document.getElementById("image").value = category.image;
+        // document.getElementById("image").value = category.image;
 
         document.getElementById("description").value = category.description;
 
@@ -233,7 +243,8 @@ async function deleteCategory(id) {
 
         const response = await fetch(`${API_URL}/${id}`, {
 
-            method: "DELETE"
+            method: "DELETE",
+             headers: AUTH_HEADERS
 
         });
 
@@ -241,15 +252,15 @@ async function deleteCategory(id) {
 
         if (data.success) {
 
-            alert("Category Deleted Successfully");
+           showToast("Category Deleted Successfully");
 
             loadCategories();
-
+            
         }
 
         else {
 
-            alert(data.message);
+           showToast(data.message);
 
         }
 
@@ -259,7 +270,7 @@ async function deleteCategory(id) {
 
         console.error(error);
 
-        alert("Unable to delete category.");
+        showToast("Unable to delete category.");
 
     }
 

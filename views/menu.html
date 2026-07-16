@@ -5,15 +5,14 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FoodExpress | My Cart</title>
+    <title>FoodExpress | Menu</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <link rel="stylesheet" href="/css/style.css">
 
@@ -36,7 +35,7 @@
         <button
             class="navbar-toggler"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarNav">
+            data-bs-target="#menuNav">
 
             <span class="navbar-toggler-icon"></span>
 
@@ -44,14 +43,13 @@
 
         <div
             class="collapse navbar-collapse"
-            id="navbarNav">
+            id="menuNav">
 
             <ul class="navbar-nav ms-auto align-items-lg-center">
 
                 <li class="nav-item">
 
-                    <a href="/"
-                       class="nav-link">
+                    <a href="/" class="nav-link">
 
                         Home
 
@@ -62,7 +60,7 @@
                 <li class="nav-item">
 
                     <a href="/menu"
-                       class="nav-link">
+                       class="nav-link active">
 
                         Menu
 
@@ -86,7 +84,7 @@
                 <li class="nav-item">
 
                     <a href="/cart"
-                       class="nav-link active position-relative">
+                       class="nav-link position-relative">
 
                         <i class="fa-solid fa-cart-shopping"></i>
 
@@ -153,163 +151,236 @@
 
 <section class="hero">
 
-    <div class="container text-center">
+    <div class="container">
 
-        <h1>
+        <div class="row align-items-center">
 
-            🛒 My Shopping Cart
+            <div class="col-lg-6">
 
-        </h1>
+                <h1>
+
+                    Explore Our
+
+                    Delicious Menu
+
+                </h1>
+
+                <p>
+
+                    Freshly prepared food,
+
+                    lightning-fast delivery,
+
+                    and exciting offers.
+
+                </p>
+
+                <a href="#foods"
+
+                   class="btn btn-warning btn-lg">
+
+                    🍽 Browse Menu
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-6 text-center">
+
+                <img
+
+                    src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900"
+
+                    class="img-fluid rounded-4 shadow"
+
+                    alt="Food">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= SEARCH ================= -->
+
+<div class="container mt-5">
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+
+            type="text"
+
+            id="searchFood"
+
+            placeholder="Search Food...">
+
+    </div>
+
+</div>
+
+<!-- ================= CATEGORY ================= -->
+
+<section class="container mt-5">
+
+    <div class="section-title">
+
+        <h2>
+
+            Categories
+
+        </h2>
 
         <p>
 
-            Review your delicious order before checkout.
+            Find your favourite dishes
 
         </p>
 
     </div>
 
+    <div
+
+        id="categoryContainer"
+
+        class="category-scroll">
+
+    </div>
+
 </section>
 
-<!-- ================= CART ================= -->
+<!-- ================= MENU ================= -->
+
+<section
+
+    id="foods"
+
+    class="container py-5">
+
+    <div class="section-title">
+
+        <h2>
+
+            Our Menu
+
+        </h2>
+
+        <p>
+
+            Fresh • Fast • Affordable
+
+        </p>
+
+    </div>
+
+    <div
+
+        class="row"
+
+        id="foodContainer">
+
+        <div class="col-12 text-center">
+
+            <div class="loader"></div>
+
+            <p class="mt-3">
+
+                Loading Foods...
+
+            </p>
+
+        </div>
+            </div>
+
+</section>
+
+<!-- ================= WHY CHOOSE US ================= -->
 
 <section class="container py-5">
 
-    <div class="row">
+    <div class="section-title">
 
-        <!-- LEFT -->
+        <h2>
 
-        <div class="col-lg-8">
+            Why Choose FoodExpress?
 
-            <div id="cartContainer">
+        </h2>
 
-                <div class="text-center">
+        <p>
 
-                    <div class="loader"></div>
+            We deliver happiness with every order.
 
-                    <p class="mt-3">
+        </p>
 
-                        Loading Cart...
+    </div>
 
-                    </p>
+    <div class="row g-4">
 
-                </div>
+        <div class="col-lg-4 col-md-6">
+
+            <div class="feature-card">
+
+                <i class="fa-solid fa-burger"></i>
+
+                <h4>
+
+                    Fresh Food
+
+                </h4>
+
+                <p>
+
+                    Freshly prepared using quality ingredients every day.
+
+                </p>
 
             </div>
 
         </div>
 
-        <!-- RIGHT -->
+        <div class="col-lg-4 col-md-6">
 
-        <div class="col-lg-4">
+            <div class="feature-card">
 
-            <div class="card shadow-lg border-0 rounded-4 p-4 sticky-top">
+                <i class="fa-solid fa-truck-fast"></i>
 
-                <h3 class="mb-4">
+                <h4>
 
-                    Order Summary
+                    Fast Delivery
 
-                </h3>
+                </h4>
 
-                <div class="d-flex justify-content-between mb-3">
+                <p>
 
-                    <span>
+                    Lightning-fast delivery at your doorstep.
 
-                        Items Total
+                </p>
 
-                    </span>
+            </div>
 
-                    <strong>
+        </div>
 
-                        ₹<span id="grandTotal">0</span>
+        <div class="col-lg-4 col-md-6">
 
-                    </strong>
+            <div class="feature-card">
 
-                </div>
+                <i class="fa-solid fa-credit-card"></i>
 
-                <div class="d-flex justify-content-between mb-3">
+                <h4>
 
-                    <span>
+                    Secure Payment
 
-                        Delivery
+                </h4>
 
-                    </span>
+                <p>
 
-                    <strong class="text-success">
+                    Safe and secure online payment with Razorpay.
 
-                        FREE
-
-                    </strong>
-
-                </div>
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>
-
-                        GST
-
-                    </span>
-
-                    <strong>
-
-                        Included
-
-                    </strong>
-
-                </div>
-
-                <hr>
-
-                <div class="mb-3">
-
-                    <input
-
-                        type="text"
-
-                        class="form-control"
-
-                        placeholder="Coupon Code">
-
-                </div>
-
-                <button
-
-                    class="btn btn-outline-danger w-100 mb-3">
-
-                    Apply Coupon
-
-                </button>
-
-                <button
-
-                    class="btn btn-danger btn-lg w-100"
-
-                    onclick="proceedCheckout()">
-
-                    Proceed To Checkout
-
-                </button>
-
-                <a
-
-                    href="/menu"
-
-                    class="btn btn-light border mt-3 w-100">
-
-                    Continue Shopping
-
-                </a>
-
-                <button
-
-                    class="btn btn-outline-danger mt-3 w-100"
-
-                    onclick="clearCart()">
-
-                    Clear Cart
-
-                </button>
+                </p>
 
             </div>
 
@@ -318,6 +389,61 @@
     </div>
 
 </section>
+
+<!-- ================= NEWSLETTER ================= -->
+
+<section class="container my-5">
+
+    <div class="newsletter">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-6">
+
+                <h2>
+
+                    Subscribe Our Newsletter
+
+                </h2>
+
+                <p>
+
+                    Get offers and discounts directly in your inbox.
+
+                </p>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="input-group">
+
+                    <input
+
+                        type="email"
+
+                        class="form-control"
+
+                        placeholder="Enter your email">
+
+                    <button
+
+                        class="btn btn-dark">
+
+                        Subscribe
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 <!-- ================= FOOTER ================= -->
 
 <footer>
@@ -402,9 +528,9 @@
 
                     <li><a href="#">Privacy Policy</a></li>
 
-                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Terms</a></li>
 
-                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact</a></li>
 
                 </ul>
 
@@ -420,7 +546,7 @@
 
                 <p>
 
-                    📍 Lucknow, Uttar Pradesh
+                    📍 Lucknow, India
 
                 </p>
 
@@ -444,13 +570,7 @@
 
         <div class="text-center">
 
-            <p class="mb-0">
-
-                © 2026 FoodExpress. All Rights Reserved.
-
-                Developed by <strong>Saurabh Mishra</strong>
-
-            </p>
+            © 2026 FoodExpress | Developed by <b>Saurabh Mishra</b>
 
         </div>
 
@@ -484,8 +604,6 @@
 
             <button
 
-                type="button"
-
                 class="btn-close btn-close-white me-2 m-auto"
 
                 data-bs-dismiss="toast">
@@ -506,7 +624,7 @@
 
 <script src="/js/toast.js"></script>
 
-<script src="/js/cart.js"></script>
+<script src="/js/menu.js"></script>
 
 </body>
 

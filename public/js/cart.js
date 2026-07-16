@@ -1,30 +1,124 @@
 /*
 =========================================================
+ FoodExpress Pro
  Cart Module
----------------------------------------------------------
- Features
- ✔ Load Cart
- ✔ Display Cart
- ✔ Increase Quantity
- ✔ Decrease Quantity
- ✔ Remove Item
- ✔ Grand Total
 =========================================================
 */
-
-// =====================================
-// Load Cart from Local Storage
-// =====================================
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const cartContainer = document.getElementById("cartContainer");
 const grandTotal = document.getElementById("grandTotal");
 
+/* =====================================
+   Toast Helper
+===================================== */
 
-// =====================================
-// Display Cart
-// =====================================
+function toast(message, type = "success") {
+
+    if (typeof showToast === "function") {
+
+        showToast(message, type);
+
+    } else {
+
+        console.log(message);
+
+    }
+
+}
+
+/* =====================================
+   Update Cart Badge
+===================================== */
+
+function updateCartCount() {
+
+    const badge = document.getElementById("cartCount");
+
+    if (!badge) return;
+
+    let total = 0;
+
+    cart.forEach(item => {
+
+        total += item.quantity;
+
+    });
+
+    badge.innerHTML = total;
+
+}
+
+/* =====================================
+   Save Cart
+===================================== */
+
+function saveCart() {
+
+    localStorage.setItem(
+
+        "cart",
+
+        JSON.stringify(cart)
+
+    );
+
+    updateCartCount();
+
+    loadCart();
+
+}
+
+/* =====================================
+   Empty Cart
+===================================== */
+
+function emptyCartHTML() {
+
+    return `
+
+<div class="text-center py-5">
+
+<i
+
+class="fa-solid fa-cart-shopping"
+
+style="font-size:90px;color:#ff4d4f">
+
+</i>
+
+<h2 class="mt-4">
+
+Your Cart is Empty
+
+</h2>
+
+<p class="text-muted">
+
+Looks like you haven't added anything yet.
+
+</p>
+
+<a
+
+href="/menu"
+
+class="btn btn-danger btn-lg mt-3">
+
+Browse Menu
+
+</a>
+
+</div>
+
+`;
+
+}
+
+/* =====================================
+   Load Cart
+===================================== */
 
 function loadCart() {
 
@@ -32,17 +126,11 @@ function loadCart() {
 
     if (cart.length === 0) {
 
-        cartContainer.innerHTML = `
+        cartContainer.innerHTML = emptyCartHTML();
 
-            <div class="alert alert-warning text-center">
+        grandTotal.innerHTML = "0";
 
-                Your Cart is Empty
-
-            </div>
-
-        `;
-
-        grandTotal.innerText = "0";
+        updateCartCount();
 
         return;
 
@@ -52,110 +140,132 @@ function loadCart() {
 
     cart.forEach((item, index) => {
 
-        const subTotal = item.price * item.quantity;
+        const subtotal =
 
-        total += subTotal;
+            item.price *
+
+            item.quantity;
+
+        total += subtotal;
 
         cartContainer.innerHTML += `
 
-        <div class="card mb-3 shadow">
+<div class="card food-card shadow-lg mb-4">
 
-            <div class="row g-0 align-items-center">
+<div class="row align-items-center g-0">
 
-                <div class="col-md-2 text-center">
+<div class="col-lg-2 col-md-3 text-center p-3">
 
-                    <img
+<img
 
-                    src="${item.image}"
+src="${item.image}"
 
-                    class="img-fluid rounded"
+class="img-fluid rounded"
 
-                    style="height:120px;width:120px;object-fit:cover;">
+style="height:140px;width:140px;object-fit:cover;">
 
-                </div>
+</div>
 
-                <div class="col-md-4">
+<div class="col-lg-4 col-md-4">
 
-                    <div class="card-body">
+<div class="card-body">
 
-                        <h5>${item.name}</h5>
+<h4>
 
-                        <p>₹${item.price}</p>
+${item.name}
 
-                    </div>
+</h4>
 
-                </div>
+<p class="text-muted">
 
-                <div class="col-md-3 text-center">
+${item.category?.name || "Food"}
 
-                    <button
+</p>
 
-                    class="btn btn-danger"
+<h5 class="text-danger">
 
-                    onclick="decreaseQty(${index})">
+₹${item.price}
 
-                    -
+</h5>
 
-                    </button>
+</div>
 
-                    <span class="mx-3 fw-bold">
+</div>
 
-                    ${item.quantity}
+<div class="col-lg-3 col-md-3 text-center">
 
-                    </span>
+<div class="d-flex justify-content-center align-items-center">
 
-                    <button
+<button
 
-                    class="btn btn-success"
+class="btn btn-outline-danger"
 
-                    onclick="increaseQty(${index})">
+onclick="decreaseQty(${index})">
 
-                    +
+<i class="fa-solid fa-minus"></i>
 
-                    </button>
+</button>
 
-                </div>
+<span
 
-                <div class="col-md-2">
+class="mx-3 fw-bold fs-5">
 
-                    <h5>
+${item.quantity}
 
-                    ₹${subTotal}
+</span>
 
-                    </h5>
+<button
 
-                </div>
+class="btn btn-danger"
 
-                <div class="col-md-1 text-center">
+onclick="increaseQty(${index})">
 
-                    <button
+<i class="fa-solid fa-plus"></i>
 
-                    class="btn btn-outline-danger"
+</button>
 
-                    onclick="removeItem(${index})">
+</div>
 
-                    <i class="fa-solid fa-trash"></i>
+</div>
 
-                    </button>
+<div class="col-lg-2 col-md-2 text-center">
 
-                </div>
+<h4>
 
-            </div>
+₹${subtotal}
 
-        </div>
+</h4>
 
-        `;
+</div>
+
+<div class="col-lg-1 text-center">
+
+<button
+
+class="btn btn-outline-danger"
+
+onclick="removeItem(${index})">
+
+<i class="fa-solid fa-trash"></i>
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
 
     });
 
-    grandTotal.innerText = total;
+    grandTotal.innerHTML = total;
 
 }
-
-
-// =====================================
-// Increase Quantity
-// =====================================
+/* =====================================
+   Increase Quantity
+===================================== */
 
 function increaseQty(index) {
 
@@ -163,12 +273,13 @@ function increaseQty(index) {
 
     saveCart();
 
+    toast("➕ Quantity Updated");
+
 }
 
-
-// =====================================
-// Decrease Quantity
-// =====================================
+/* =====================================
+   Decrease Quantity
+===================================== */
 
 function decreaseQty(index) {
 
@@ -176,9 +287,15 @@ function decreaseQty(index) {
 
         cart[index].quantity--;
 
+        toast("➖ Quantity Updated");
+
     } else {
 
+        const itemName = cart[index].name;
+
         cart.splice(index, 1);
+
+        toast(`🗑 ${itemName} Removed`, "warning");
 
     }
 
@@ -186,35 +303,98 @@ function decreaseQty(index) {
 
 }
 
-
-// =====================================
-// Remove Item
-// =====================================
+/* =====================================
+   Remove Item
+===================================== */
 
 function removeItem(index) {
+
+    const itemName = cart[index].name;
 
     cart.splice(index, 1);
 
     saveCart();
 
+    toast(`🗑 ${itemName} Removed`, "warning");
+
 }
 
+/* =====================================
+   Clear Cart
+===================================== */
 
-// =====================================
-// Save Cart
-// =====================================
+function clearCart() {
 
-function saveCart() {
+    if (cart.length === 0) {
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+        toast("Cart is already empty", "warning");
+
+        return;
+
+    }
+
+    cart = [];
+
+    saveCart();
+
+    toast("🧹 Cart Cleared");
+
+}
+
+/* =====================================
+   Calculate Total
+===================================== */
+
+function calculateTotal() {
+
+    let total = 0;
+
+    cart.forEach(item => {
+
+        total += item.price * item.quantity;
+
+    });
+
+    return total;
+
+}
+
+/* =====================================
+   Proceed To Checkout
+===================================== */
+
+function proceedCheckout() {
+
+    if (cart.length === 0) {
+
+        toast("Your cart is empty", "warning");
+
+        return;
+
+    }
+
+    window.location.href = "/checkout";
+
+}
+
+/* =====================================
+   Initial Load
+===================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
 
     loadCart();
 
-}
+    updateCartCount();
 
+});
 
-// =====================================
-// Initial Load
-// =====================================
+/* =====================================
+   Export (Future Use)
+===================================== */
 
-loadCart();
+window.increaseQty = increaseQty;
+window.decreaseQty = decreaseQty;
+window.removeItem = removeItem;
+window.clearCart = clearCart;
+window.proceedCheckout = proceedCheckout;

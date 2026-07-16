@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Orders</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/admin.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ===========================
+Admin Navbar
+=========================== -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+
+<div class="container">
+
+<a class="navbar-brand fw-bold" href="/admin/dashboard">
+
+🍔 FoodExpress Admin
+
+</a>
+
+<button
+class="navbar-toggler"
+type="button"
+data-bs-toggle="collapse"
+data-bs-target="#adminMenu">
+
+<span class="navbar-toggler-icon"></span>
+
+</button>
+
+<div class="collapse navbar-collapse" id="adminMenu">
+
+<ul class="navbar-nav ms-auto align-items-center">
+
+<li class="nav-item">
+
+<a href="/admin/dashboard" class="nav-link">
+
+📊 Dashboard
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="/admin/category" class="nav-link">
+
+📂 Categories
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="/admin/food" class="nav-link">
+
+🍕 Foods
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="/admin/orders" class="nav-link active">
+
+📦 Orders
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<span
+id="adminName"
+class="nav-link text-warning fw-bold">
+
+</span>
+
+</li>
+
+<li class="nav-item">
+
+<button
+class="btn btn-danger ms-2"
+onclick="logout()">
+
+🚪 Logout
+
+</button>
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</nav>
+
+<!-- ===========================
+Page
+=========================== -->
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+<h2>
+
+📦 Customer Orders
+
+</h2>
+
+<button
+class="btn btn-success"
+onclick="loadOrders()">
+
+<i class="fa-solid fa-rotate"></i>
+
+Refresh
+
+</button>
+
+</div>
+
+<div class="row mb-3">
+
+<div class="col-md-4">
+
+<input
+type="text"
+id="searchOrder"
+class="form-control"
+placeholder="Search Customer...">
+
+</div>
+
+</div>
+
+<div
+id="ordersTable">
+
+<div class="text-center p-5">
+
+<div class="spinner-border text-success">
+
+</div>
+
+<p class="mt-3">
+
+Loading Orders...
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+<!-- ===========================
+Toast
+=========================== -->
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
+
+    <div
+        id="liveToast"
+        class="toast border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true">
+
+        <div class="d-flex">
+
+            <div
+                id="toastMessage"
+                class="toast-body">
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast">
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+Scripts
+=========================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/js/auth.js"></script>
+
+<script src="/js/toast.js"></script>
+
+<script>
+
+const user = JSON.parse(localStorage.getItem("user"));
+
+if (!user || user.role !== "admin") {
+
+    alert("Access Denied");
+
+    window.location.href = "/login";
+
+}
+
+document.getElementById("adminName").innerHTML =
+    `<i class="fa-solid fa-user-shield"></i> ${user.name}`;
+
+</script>
+
+<script src="/js/admin-orders.js"></script>
+
+</body>
+
+</html>

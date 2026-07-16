@@ -1,70 +1,75 @@
 /*
 =========================================================
- Food Management (Cloudinary Version)
----------------------------------------------------------
- Part 1
-
- ✔ Load Categories
- ✔ Load Foods
- ✔ Display Food Images
- ✔ Global Variables
-
+ Food Management (Secure Version)
 =========================================================
 */
-
-// ========================================
-// API URLs
-// ========================================
 
 const FOOD_API = "/api/food";
 const CATEGORY_API = "/api/category";
 
-
-// ========================================
-// Global Variables
-// ========================================
-
 let editFoodId = null;
-
-
-// ========================================
-// HTML Elements
-// ========================================
 
 const foodForm = document.getElementById("foodForm");
 const submitBtn = document.getElementById("submitBtn");
 const foodTable = document.getElementById("foodTable");
 const categorySelect = document.getElementById("category");
 
+const TOKEN = localStorage.getItem("token");
 
-// ========================================
+const AUTH_HEADERS = {
+    Authorization: "Bearer " + TOKEN
+};
+
+// =====================================
+// Toast
+// =====================================
+
+function notify(message, type = "success") {
+
+    if (typeof showToast === "function") {
+
+        showToast(message, type);
+
+    } else {
+
+        alert(message);
+
+    }
+
+}
+
+// =====================================
 // Load Categories
-// ========================================
+// =====================================
 
 async function loadCategories() {
 
     try {
 
-        const response = await fetch(CATEGORY_API);
+        const response = await fetch(CATEGORY_API + "?t=" + Date.now(), {
+    cache: "no-store"
+});
 
         const data = await response.json();
 
         categorySelect.innerHTML =
             `<option value="">Select Category</option>`;
 
-        data.categories.forEach(category => {
+        if (data.success) {
 
-            categorySelect.innerHTML += `
+            data.categories.forEach(category => {
 
-                <option value="${category._id}">
+                categorySelect.innerHTML += `
 
-                    ${category.name}
+<option value="${category._id}">
+${category.name}
+</option>
 
-                </option>
+`;
 
-            `;
+            });
 
-        });
+        }
 
     }
 
@@ -72,20 +77,23 @@ async function loadCategories() {
 
         console.log(error);
 
+        notify("Unable to load categories", "error");
+
     }
 
 }
 
-
-// ========================================
-// Load All Foods
-// ========================================
+// =====================================
+// Load Foods
+// =====================================
 
 async function loadFoods() {
 
     try {
 
-        const response = await fetch(FOOD_API);
+        const response = await fetch(FOOD_API + "?t=" + Date.now(), {
+    cache: "no-store"
+});
 
         const data = await response.json();
 
@@ -95,17 +103,17 @@ async function loadFoods() {
 
             foodTable.innerHTML = `
 
-                <tr>
+<tr>
 
-                    <td colspan="6" class="text-center">
+<td colspan="6" class="text-center">
 
-                        No Food Found
+No Food Found
 
-                    </td>
+</td>
 
-                </tr>
+</tr>
 
-            `;
+`;
 
             return;
 
@@ -115,57 +123,49 @@ async function loadFoods() {
 
             foodTable.innerHTML += `
 
-                <tr>
+<tr>
 
-                    <td>${index + 1}</td>
+<td>${index + 1}</td>
 
-                    <td>
+<td>
 
-                        <img
+<img
+src="${food.image}"
+width="70"
+height="70"
+style="object-fit:cover;border-radius:10px;">
 
-                            src="${food.image}"
+</td>
 
-                            width="70"
+<td>${food.name}</td>
 
-                            height="70"
+<td>₹${food.price}</td>
 
-                            style="object-fit:cover;border-radius:8px;">
+<td>${food.category?.name || "-"}</td>
 
-                    </td>
+<td>
 
-                    <td>${food.name}</td>
+<button
+class="btn btn-warning btn-sm me-2"
+onclick="editFood('${food._id}')">
 
-                    <td>₹${food.price}</td>
+Edit
 
-                    <td>${food.category.name}</td>
+</button>
 
-                    <td>
+<button
+class="btn btn-danger btn-sm"
+onclick="deleteFood('${food._id}')">
 
-                        <button
+Delete
 
-                            class="btn btn-warning btn-sm me-2"
+</button>
 
-                            onclick="editFood('${food._id}')">
+</td>
 
-                            Edit
+</tr>
 
-                        </button>
-
-                        <button
-
-                            class="btn btn-danger btn-sm"
-
-                            onclick="deleteFood('${food._id}')">
-
-                            Delete
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `;
+`;
 
         });
 
@@ -175,23 +175,24 @@ async function loadFoods() {
 
         console.log(error);
 
+        notify("Unable to load foods", "error");
+
     }
 
 }
 
-// =====================================================
-// Add Food / Update Food
-// Uses FormData for Image Upload
-// =====================================================
+// =====================================
+// Add / Update Food
+// =====================================
 
 foodForm.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
     submitBtn.disabled = true;
+
     submitBtn.innerHTML = "Uploading...";
 
-    // Create FormData object
     const formData = new FormData();
 
     formData.append("name", document.getElementById("name").value.trim());
@@ -204,12 +205,11 @@ foodForm.addEventListener("submit", async (e) => {
 
     formData.append("available", document.getElementById("available").checked);
 
-    // Selected Image
-    const imageFile = document.getElementById("image").files[0];
+    const image = document.getElementById("image").files[0];
 
-    if (imageFile) {
+    if (image) {
 
-        formData.append("image", imageFile);
+        formData.append("image", image);
 
     }
 
@@ -217,15 +217,13 @@ foodForm.addEventListener("submit", async (e) => {
 
         let response;
 
-        // ==========================
-        // Add Food
-        // ==========================
-
-        if (editFoodId === null) {
+        if (editFoodId == null) {
 
             response = await fetch(FOOD_API, {
 
                 method: "POST",
+
+                headers: AUTH_HEADERS,
 
                 body: formData
 
@@ -233,15 +231,13 @@ foodForm.addEventListener("submit", async (e) => {
 
         }
 
-        // ==========================
-        // Update Food
-        // ==========================
-
         else {
 
             response = await fetch(`${FOOD_API}/${editFoodId}`, {
 
                 method: "PUT",
+
+                headers: AUTH_HEADERS,
 
                 body: formData
 
@@ -251,11 +247,25 @@ foodForm.addEventListener("submit", async (e) => {
 
         const data = await response.json();
 
+        if (!response.ok) {
+
+            notify(data.message || "Operation Failed", "error");
+
+            submitBtn.disabled = false;
+
+            submitBtn.innerHTML = "Add Food";
+
+            return;
+
+        }
+
         if (data.success) {
 
-            alert(editFoodId
-                ? "Food Updated Successfully"
-                : "Food Added Successfully");
+            notify(
+                editFoodId
+                    ? "Food Updated Successfully"
+                    : "Food Added Successfully"
+            );
 
             foodForm.reset();
 
@@ -263,13 +273,19 @@ foodForm.addEventListener("submit", async (e) => {
 
             submitBtn.innerHTML = "Add Food";
 
+            submitBtn.disabled = false;
+
             await loadFoods();
 
         }
 
         else {
 
-            alert(data.message);
+            notify(data.message, "error");
+
+            submitBtn.disabled = false;
+
+            submitBtn.innerHTML = "Add Food";
 
         }
 
@@ -279,19 +295,18 @@ foodForm.addEventListener("submit", async (e) => {
 
         console.log(error);
 
-        alert("Server Error");
+        notify("Server Error", "error");
+
+        submitBtn.disabled = false;
+
+        submitBtn.innerHTML = "Add Food";
 
     }
 
-    submitBtn.disabled = false;
-
 });
-
-
-
-// =====================================================
+// =====================================
 // Edit Food
-// =====================================================
+// =====================================
 
 async function editFood(id) {
 
@@ -303,22 +318,23 @@ async function editFood(id) {
 
         const food = data.foods.find(item => item._id === id);
 
-        if (!food) return;
+        if (!food) {
+
+            notify("Food not found", "error");
+
+            return;
+
+        }
 
         document.getElementById("name").value = food.name;
 
         document.getElementById("price").value = food.price;
 
-        document.getElementById("description").value = food.description;
+        document.getElementById("description").value = food.description || "";
 
         document.getElementById("available").checked = food.available;
 
-        categorySelect.value = food.category._id;
-
-        // NOTE:
-        // Browser security does not allow
-        // automatically filling a file input.
-        // User must select a new image if changing it.
+        categorySelect.value = food.category?._id || "";
 
         editFoodId = id;
 
@@ -338,52 +354,55 @@ async function editFood(id) {
 
         console.log(error);
 
+        notify("Unable to load food details", "error");
+
     }
 
 }
 
-/*=========================================================
-    FOOD MANAGEMENT MODULE
-    Part 3
-
-    ✔ Delete Food
-    ✔ Reset Form
-    ✔ Initial Load
-
-==========================================================*/
-
-
-// =====================================================
+// =====================================
 // Delete Food
-// =====================================================
+// =====================================
 
 async function deleteFood(id) {
 
-    const confirmDelete = confirm("Are you sure you want to delete this food?");
+    if (!confirm("Are you sure you want to delete this food?")) {
 
-    if (!confirmDelete) return;
+        return;
+
+    }
 
     try {
 
         const response = await fetch(`${FOOD_API}/${id}`, {
 
-            method: "DELETE"
+            method: "DELETE",
+
+            headers: AUTH_HEADERS
 
         });
 
         const data = await response.json();
 
+        if (!response.ok) {
+
+            notify(data.message || "Delete failed", "error");
+
+            return;
+
+        }
+
         if (data.success) {
 
-            alert("Food Deleted Successfully");
+            notify("Food Deleted Successfully");
 
-            loadFoods();
+            await loadFoods();
 
         }
 
         else {
 
-            alert(data.message);
+            notify(data.message, "error");
 
         }
 
@@ -393,17 +412,15 @@ async function deleteFood(id) {
 
         console.log(error);
 
-        alert("Server Error");
+        notify("Server Error", "error");
 
     }
 
 }
 
-
-
-// =====================================================
+// =====================================
 // Reset Form
-// =====================================================
+// =====================================
 
 function resetFoodForm() {
 
@@ -411,27 +428,15 @@ function resetFoodForm() {
 
     editFoodId = null;
 
+    submitBtn.disabled = false;
+
     submitBtn.innerHTML = "Add Food";
 
 }
 
-
-
-// =====================================================
-// Cancel Edit
-// =====================================================
-
-function cancelEdit() {
-
-    resetFoodForm();
-
-}
-
-
-
-// =====================================================
-// Reload Foods
-// =====================================================
+// =====================================
+// Refresh Foods
+// =====================================
 
 async function refreshFoods() {
 
@@ -439,11 +444,9 @@ async function refreshFoods() {
 
 }
 
-
-
-// =====================================================
+// =====================================
 // Initial Load
-// =====================================================
+// =====================================
 
 window.onload = async () => {
 
@@ -451,4 +454,5 @@ window.onload = async () => {
 
     await loadFoods();
 
+resetFoodForm();
 };

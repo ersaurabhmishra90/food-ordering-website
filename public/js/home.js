@@ -1,116 +1,87 @@
 /*
 =========================================================
- Home Page
----------------------------------------------------------
- Features
- ✔ Load Foods
- ✔ Display Food Cards
- ✔ Cloudinary Images
- ✔ Add To Cart Button (Coming Next)
+ FoodExpress Pro
+ Home Page Script
 =========================================================
 */
 
-// =====================================
-// API URL
-// =====================================
-
 const FOOD_API = "/api/food";
-
-
-// =====================================
-// HTML Container
-// =====================================
+const CATEGORY_API = "/api/category";
 
 const foodContainer = document.getElementById("foodContainer");
+const categoryContainer = document.getElementById("categoryContainer");
+const searchFood = document.getElementById("searchFood");
 
+let allFoods = [];
+let selectedCategory = "";
 
-// =====================================
-// Load Foods
-// =====================================
+/* =====================================
+   Category Icons
+===================================== */
 
-async function loadFoods() {
+function getCategoryIcon(name){
 
-    try {
+    const icons = {
 
-        const response = await fetch(FOOD_API);
+        Pizza:"🍕",
+        Burger:"🍔",
+        Drinks:"🥤",
+        Dessert:"🍰",
+        Snacks:"🍟",
+        Biryani:"🍗",
+        Chinese:"🍜",
+        Momos:"🥟",
+        Rolls:"🌯"
+
+    };
+
+    return icons[name] || "🍽";
+
+}
+
+/* =====================================
+   Load Categories
+===================================== */
+
+async function loadCategories(){
+
+    try{
+
+        const response = await fetch(CATEGORY_API);
 
         const data = await response.json();
 
-        foodContainer.innerHTML = "";
+        if(!data.success) return;
 
-        if (!data.success || data.foods.length === 0) {
+        categoryContainer.innerHTML="";
 
-            foodContainer.innerHTML = `
+        const allBtn=document.createElement("button");
 
-                <div class="col-12 text-center">
+        allBtn.className="category-btn active";
 
-                    <h4>No Food Available</h4>
+        allBtn.innerHTML="🍽 All";
 
-                </div>
+        allBtn.onclick=()=>filterByCategory("");
 
-            `;
+        categoryContainer.appendChild(allBtn);
 
-            return;
+        data.categories.forEach(category=>{
 
-        }
+            const btn=document.createElement("button");
 
-        data.foods.forEach(food => {
+            btn.className="category-btn";
 
-            foodContainer.innerHTML += `
+            btn.innerHTML=`${getCategoryIcon(category.name)} ${category.name}`;
 
-                <div class="col-md-4 col-lg-3 mb-4">
+            btn.onclick=()=>filterByCategory(category.name);
 
-                    <div class="card shadow h-100">
-
-                        <img
-
-                            src="${food.image}"
-
-                            class="card-img-top"
-
-                            style="height:220px;object-fit:cover;">
-
-                        <div class="card-body d-flex flex-column">
-
-                            <h5>${food.name}</h5>
-
-                            <p class="text-muted">
-
-                                ${food.description}
-
-                            </p>
-
-                            <h4 class="text-success">
-
-                                ₹${food.price}
-
-                            </h4>
-
-                            <button
-
-                                class="btn btn-primary mt-auto"
-
-                                onclick="addToCart('${food._id}')">
-
-                                <i class="fa-solid fa-cart-shopping"></i>
-
-                                Add To Cart
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
+            categoryContainer.appendChild(btn);
 
         });
 
     }
 
-    catch (error) {
+    catch(error){
 
         console.log(error);
 
@@ -118,56 +89,63 @@ async function loadFoods() {
 
 }
 
+/* =====================================
+   Filter Category
+===================================== */
 
+function filterByCategory(category){
 
-// Add Food To Cart
-// =====================================================
+    selectedCategory=category;
 
-async function addToCart(id) {
+    document.querySelectorAll(".category-btn").forEach(btn=>{
 
-    try {
+        btn.classList.remove("active");
 
-        const response = await fetch(FOOD_API);
+    });
 
-        const data = await response.json();
+    event.target.classList.add("active");
 
-        const food = data.foods.find(item => item._id === id);
+    filterFoods();
 
-        if (!food) {
+}
 
-            alert("Food not found");
+/* =====================================
+   Load Foods
+===================================== */
+
+async function loadFoods(){
+
+    try{
+
+        foodContainer.innerHTML=`
+
+        <div class="col-12 text-center">
+
+            <div class="loader"></div>
+
+        </div>
+
+        `;
+
+        const response=await fetch(FOOD_API);
+
+        const data=await response.json();
+
+        if(!data.success){
+
+            foodContainer.innerHTML="<h3>No Food Found</h3>";
 
             return;
 
         }
 
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        allFoods=data.foods;
 
-        const existing = cart.find(item => item._id === id);
-
-        if (existing) {
-
-            existing.quantity++;
-
-            alert(`Quantity Updated (${existing.quantity})`);
-
-        } else {
-
-            food.quantity = 1;
-
-            cart.push(food);
-
-            alert("Food Added To Cart");
-
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-        updateCartCount();
+        displayFoods(allFoods);
 
     }
 
-    catch (error) {
+    catch(error){
 
         console.log(error);
 
@@ -175,21 +153,204 @@ async function addToCart(id) {
 
 }
 
-// =====================================================
-// Update Cart Count
-// =====================================================
+/* =====================================
+   Display Foods
+===================================== */
+
+function displayFoods(foods){
+
+    foodContainer.innerHTML="";
+
+    if(foods.length===0){
+
+        foodContainer.innerHTML=`
+
+        <div class="col-12">
+
+        <div class="alert alert-warning text-center">
+
+        No Food Found
+
+        </div>
+
+        </div>
+
+        `;
+
+        return;
+
+    }
+
+    foods.forEach(food=>{
+
+        foodContainer.innerHTML+=`
+
+<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+
+<div class="food-card h-100">
+
+<div class="food-image position-relative">
+
+<img src="${food.image}" alt="${food.name}">
+
+<div class="rating">
+
+⭐ 4.8
+
+</div>
+
+<div class="offer">
+
+20% OFF
+
+</div>
+
+</div>
+
+<div class="food-info d-flex flex-column">
+
+<h5>
+
+${food.name}
+
+</h5>
+
+<span class="category-badge">
+
+${food.category?.name || "Food"}
+
+</span>
+
+<p class="text-muted mt-2">
+
+${food.description}
+
+</p>
+
+<div class="d-flex justify-content-between align-items-center mt-auto">
+
+<div class="food-price">
+
+₹${food.price}
+
+</div>
+
+<button
+
+class="btn btn-danger"
+
+onclick="addToCart('${food._id}')">
+
+<i class="fa-solid fa-cart-plus"></i>
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+    });
+
+}
+
+/* =====================================
+   Search + Filter
+===================================== */
+
+function filterFoods(){
+
+    const keyword=searchFood.value.toLowerCase();
+
+    const filtered=allFoods.filter(food=>{
+
+        const matchName=
+
+        food.name.toLowerCase().includes(keyword);
+
+        const matchCategory=
+
+        selectedCategory==="" ||
+
+        food.category?.name===selectedCategory;
+
+        return matchName && matchCategory;
+
+    });
+
+    displayFoods(filtered);
+
+}
+
+searchFood.addEventListener("keyup",filterFoods);
+
+/* =====================================
+   Add To Cart
+===================================== */
+
+async function addToCart(id){
+
+    const food=allFoods.find(f=>f._id===id);
+
+    if(!food) return;
+
+    let cart=JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existing=cart.find(item=>item._id===id);
+
+    if(existing){
+
+        existing.quantity++;
+
+    }
+
+    else{
+
+        food.quantity=1;
+
+        cart.push(food);
+
+    }
+
+    localStorage.setItem("cart",JSON.stringify(cart));
+
+    updateCartCount();
+
+    showToast("🍔 Food added to cart");
+
+}
+
+/* =====================================
+   Cart Count
+===================================== */
 
 function updateCartCount() {
 
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    document.getElementById("cartCount").innerHTML = cart.length;
+    let totalQuantity = 0;
+
+    cart.forEach(item => {
+
+        totalQuantity += item.quantity;
+
+    });
+
+    document.getElementById("cartCount").innerHTML = totalQuantity;
 
 }
 
-// =====================================
-// Initial Load
-// =====================================
+/* =====================================
+   Init
+===================================== */
+
+loadCategories();
+
 loadFoods();
 
 updateCartCount();

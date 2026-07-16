@@ -20,7 +20,7 @@ exports.addCategory = async (req, res) => {
 
         const category = await Category.create({
             name,
-            image,
+           
             description
         });
 
@@ -76,13 +76,13 @@ exports.updateCategory = async (req, res) => {
 
         const { id } = req.params;
 
-        const { name, image, description, isActive } = req.body;
+        const { name,  description, isActive } = req.body;
 
         const category = await Category.findByIdAndUpdate(
             id,
             {
                 name,
-                image,
+                
                 description,
                 isActive
             },

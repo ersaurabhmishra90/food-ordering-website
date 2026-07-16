@@ -1,14 +1,63 @@
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+// =====================================
+// HTML Elements
+// =====================================
+
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const password = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+
+// =====================================
+// Show / Hide Password
+// =====================================
+
+togglePassword.addEventListener("click", () => {
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        togglePassword.innerHTML =
+            `<i class="fa-solid fa-eye-slash"></i>`;
+
+    } else {
+
+        password.type = "password";
+
+        togglePassword.innerHTML =
+            `<i class="fa-solid fa-eye"></i>`;
+
+    }
+
+});
+
+// =====================================
+// Login
+// =====================================
+
+loginForm.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    const user = {
+    const email = document.getElementById("email").value.trim();
 
-        email: document.getElementById("email").value,
+    const passwordValue = password.value.trim();
 
-        password: document.getElementById("password").value
+    // Validation
 
-    };
+    if (!email || !passwordValue) {
+
+        showToast("Please fill all fields", "warning");
+
+        return;
+
+    }
+
+    loginBtn.disabled = true;
+
+    loginBtn.innerHTML =
+
+        `<span class="spinner-border spinner-border-sm"></span> Logging In...`;
 
     try {
 
@@ -22,38 +71,60 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
             },
 
-            body: JSON.stringify(user)
+            body: JSON.stringify({
+
+                email,
+
+                password: passwordValue
+
+            })
 
         });
 
         const data = await response.json();
 
-        if(data.success){
+        if (data.success) {
 
-            localStorage.setItem("token",data.token);
+            localStorage.setItem("token", data.token);
 
-            localStorage.setItem("user",JSON.stringify(data.user));
+            localStorage.setItem("user", JSON.stringify(data.user));
 
-            alert("Login Successful");
+            showToast("Login Successful", "success");
 
-            window.location.href="/";
+            setTimeout(() => {
 
-        }
+                if (data.user.role === "admin") {
 
-        else{
+                    window.location.href = "/admin/dashboard";
 
-            alert(data.message);
+                } else {
+
+                    window.location.href = "/";
+
+                }
+
+            }, 1000);
+
+        } else {
+
+            showToast(data.message, "error");
 
         }
 
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
-        alert("Server Error");
+        showToast("Server Error", "error");
 
     }
+
+    loginBtn.disabled = false;
+
+    loginBtn.innerHTML =
+
+        `<i class="fa-solid fa-right-to-bracket"></i> Login`;
 
 });

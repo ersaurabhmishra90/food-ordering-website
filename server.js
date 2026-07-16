@@ -2,14 +2,14 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 
-console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);
 
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const foodRoutes = require("./routes/foodRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-
+const paymentRoutes = require("./routes/paymentRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 // Connect to MongoDB
 connectDB();
 
@@ -27,6 +27,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/food", foodRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
@@ -77,9 +79,28 @@ app.get("/checkout", (req, res) => {
 
 });
 
+
+app.get("/my-orders", (req, res) => {
+
+    res.sendFile(path.join(__dirname, "views", "my-orders.html"));
+
+});
+
+app.get("/admin/orders", (req, res) => {
+
+    res.sendFile(path.join(__dirname, "views/admin/orders.html"));
+
+});
+
+app.get("/admin/dashboard",(req,res)=>{
+
+    res.sendFile(path.join(__dirname,"views/admin/dashboard.html"));
+
+});
+
 // Server
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
 });

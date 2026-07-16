@@ -4,14 +4,14 @@
 ---------------------------------------------------------
  Handles:
  ✔ Place Order
- ✔ Get All Orders
+ ✔ Get All Orders (Admin)
+ ✔ Get My Orders (Customer)
  ✔ Get Single Order
  ✔ Update Order Status
 =========================================================
 */
 
 const Order = require("../models/Order");
-
 
 // =====================================================
 // Place Order
@@ -27,11 +27,17 @@ exports.placeOrder = async (req, res) => {
             phone,
             address,
             items,
-            total
+            total,
+            status,
+            paymentId,
+            razorpayOrderId,
+            paymentStatus
 
         } = req.body;
 
         const order = await Order.create({
+
+            user: req.user.id,
 
             customerName,
 
@@ -41,7 +47,15 @@ exports.placeOrder = async (req, res) => {
 
             items,
 
-            total
+            total,
+
+            status: status || "Pending",
+
+            paymentId: paymentId || "",
+
+            razorpayOrderId: razorpayOrderId || "",
+
+            paymentStatus: paymentStatus || "Paid"
 
         });
 
@@ -73,18 +87,23 @@ exports.placeOrder = async (req, res) => {
 
 };
 
-
 // =====================================================
-// Get All Orders
+// Get Logged In User Orders
 // =====================================================
 
-exports.getOrders = async (req, res) => {
+exports.getMyOrders = async (req, res) => {
 
     try {
 
-        const orders = await Order.find()
+        const orders = await Order.find({
 
-            .sort({ createdAt: -1 });
+            user: req.user.id
+
+        }).sort({
+
+            createdAt: -1
+
+        });
 
         res.status(200).json({
 
@@ -100,6 +119,8 @@ exports.getOrders = async (req, res) => {
 
     catch (error) {
 
+        console.log(error);
+
         res.status(500).json({
 
             success: false,
@@ -112,6 +133,49 @@ exports.getOrders = async (req, res) => {
 
 };
 
+// =====================================================
+// Get All Orders (Admin)
+// =====================================================
+
+exports.getOrders = async (req, res) => {
+
+    try {
+
+        const orders = await Order.find()
+
+            .sort({
+
+                createdAt: -1
+
+            });
+
+        res.status(200).json({
+
+            success: true,
+
+            count: orders.length,
+
+            orders
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
 
 // =====================================================
 // Get Single Order
@@ -135,6 +199,27 @@ exports.getOrder = async (req, res) => {
 
         }
 
+        // Admin can access every order
+        // Customer can access only own order
+
+        if (
+
+            req.user.role !== "admin" &&
+
+            order.user.toString() !== req.user.id
+
+        ) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Access Denied"
+
+            });
+
+        }
+
         res.status(200).json({
 
             success: true,
@@ -146,6 +231,8 @@ exports.getOrder = async (req, res) => {
     }
 
     catch (error) {
+
+        console.log(error);
 
         res.status(500).json({
 
@@ -159,7 +246,6 @@ exports.getOrder = async (req, res) => {
 
 };
 
-
 // =====================================================
 // Update Order Status
 // =====================================================
@@ -168,13 +254,33 @@ exports.updateStatus = async (req, res) => {
 
     try {
 
+        const validStatus = [
+
+            "Pending",
+
+            "Preparing",
+
+            "Out for Delivery",
+
+            "Delivered",
+
+            "Cancelled"
+
+        ];
+
+        const status = validStatus.includes(req.body.status)
+
+            ? req.body.status
+
+            : "Pending";
+
         const order = await Order.findByIdAndUpdate(
 
             req.params.id,
 
             {
 
-                status: req.body.status
+                status
 
             },
 
@@ -202,7 +308,7 @@ exports.updateStatus = async (req, res) => {
 
             success: true,
 
-            message: "Status Updated",
+            message: "Status Updated Successfully",
 
             order
 
@@ -211,6 +317,8 @@ exports.updateStatus = async (req, res) => {
     }
 
     catch (error) {
+
+        console.log(error);
 
         res.status(500).json({
 
