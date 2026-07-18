@@ -295,13 +295,37 @@ searchFood.addEventListener("keyup",filterFoods);
 
 async function addToCart(id){
 
-    const food=allFoods.find(f=>f._id===id);
+    // ==========================
+    // Login Check
+    // ==========================
+
+    const token = localStorage.getItem("token");
+
+    if(!token){
+
+        showToast("Please login to add items to cart.","warning");
+
+        setTimeout(()=>{
+
+            window.location.href="/login";
+
+        },1200);
+
+        return;
+
+    }
+
+    // ==========================
+    // Food
+    // ==========================
+
+    const food = allFoods.find(f=>f._id===id);
 
     if(!food) return;
 
-    let cart=JSON.parse(localStorage.getItem("cart")) || [];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    const existing=cart.find(item=>item._id===id);
+    const existing = cart.find(item=>item._id===id);
 
     if(existing){
 
@@ -311,9 +335,13 @@ async function addToCart(id){
 
     else{
 
-        food.quantity=1;
+        cart.push({
 
-        cart.push(food);
+            ...food,
+
+            quantity:1
+
+        });
 
     }
 
@@ -321,7 +349,9 @@ async function addToCart(id){
 
     updateCartCount();
 
-    showToast("🍔 Food added to cart");
+    showToast("🍔 Food added to cart","success");
+
+    showCartPopup();
 
 }
 
@@ -342,6 +372,25 @@ function updateCartCount() {
     });
 
     document.getElementById("cartCount").innerHTML = totalQuantity;
+
+}
+
+
+/* =====================================
+   Cart Popup
+===================================== */
+
+function showCartPopup(){
+
+    const popup=document.getElementById("cartPopup");
+
+    popup.style.display="block";
+
+    setTimeout(()=>{
+
+        popup.style.display="none";
+
+    },3000);
 
 }
 

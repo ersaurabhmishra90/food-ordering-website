@@ -786,3 +786,51 @@ padding:25px;
 }
 
 }
+
+/* ==========================
+Cart Popup
+========================== */
+
+.cart-popup{
+
+    position:fixed;
+
+    right:20px;
+
+    bottom:20px;
+
+    background:#fff;
+
+    padding:15px 20px;
+
+    border-radius:12px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
+
+    display:none;
+
+    z-index:9999;
+
+    animation:slideUp .3s ease;
+
+}
+
+@keyframes slideUp{
+
+from{
+
+transform:translateY(40px);
+
+opacity:0;
+
+}
+
+to{
+
+transform:translateY(0);
+
+opacity:1;
+
+}
+
+}
